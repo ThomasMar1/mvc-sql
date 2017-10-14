@@ -1,0 +1,127 @@
+﻿@model IEnumerable<WebApplication1.Models.MyModel>
+
+@{
+    ViewBag.Title = "WebGrid";
+    var grid = new WebGrid(null,
+        defaultSort: ViewBag.sortCol,
+        sortFieldName: "sortCol",
+        sortDirectionFieldName: "sortDir",
+        rowsPerPage: ViewBag.rowsPerPage);
+    grid.Bind(Model, rowCount: ViewBag.count, autoSortAndPage: false);
+
+
+}
+
+<STYLE type="text/css">
+
+    .ProductID {
+        width: 110px;
+        text-align:right;
+    }
+
+    .ProductName {
+        width: 150px;
+    }
+
+    .UnitPrice {
+        width: 105px;
+        text-align:right;
+    }
+
+
+    .UnitsInStock {
+        width: 140px;
+        text-align:right;
+    }
+
+    .UnitsOnOrder {
+        width: 150px;
+        text-align:right;
+
+    }
+
+    .CategoryName {
+        width: 150px;
+    }
+
+    .CompanyName {
+        width: 160px;
+
+    }
+
+    .ContactName {
+        width: 140px;
+    }
+
+    .Country {
+        width: 95px;
+    }
+
+    .gridTable {
+        border: 1px solid blue;
+
+    }
+
+     .gridTable td, th
+    {
+        border: 1px solid blue;
+        padding: 2px;
+
+    }
+
+</STYLE>
+
+<h2>WebGrid</h2>
+
+
+<div>
+    @grid.GetHtml(
+        tableStyle: "gridTable",
+        headerStyle: "header",
+        numericLinksCount: 10,
+        columns: grid.Columns(
+            grid.Column("ProductID", Sorter("ProductID", "Product ID", grid), style: "ProductID"),
+            grid.Column("ProductName", Sorter("ProductName", "Product Name", grid), style: "ProductName"),
+            grid.Column("UnitPrice", Sorter("UnitPrice", "Unit Price", grid), style: "UnitPrice", format: (item) => (item.UnitPrice == null) ? "" : item.UnitPrice.ToString("$#.00")),
+            grid.Column("UnitsInStock", Sorter("UnitsInStock", "Units In Stock", grid), style: "UnitsInStock"),
+            grid.Column("UnitsOnOrder", Sorter("UnitsOnOrder", "Units On Order", grid), style: "UnitsOnOrder"),
+            grid.Column("CategoryName", Sorter("CategoryName", "Category Name", grid), style: "CategoryName"),
+            grid.Column("CompanyName", Sorter("CompanyName", "Company Name", grid), style: "CompanyName"),
+            grid.Column("ContactName", Sorter("ContactName", "Contact Name", grid), style: "ContactName"),
+            grid.Column("Country", Sorter("Country", "Country", grid), style: "Country")
+        ),
+        mode: WebGridPagerModes.All
+    )
+    <div>
+        <h3>Ordering by:</h3>
+        <b>@ViewBag.sortCol</b> @ViewBag.sortDir
+        <b></b> 
+    </div>
+</div>
+
+<hr />
+
+<div style="max-width: 100%;">
+    <h4>Request SQL:</h4>
+    <textarea id="styled" rows="16" cols="100" style="max-width: 100%;">
+    @ViewBag.sql
+    </textarea>
+</div>
+
+
+
+@functions {
+    public static string Sorter(string columnName, string header, WebGrid grid)
+    {
+        return string.Format("{0} {1}", header, grid.SortColumn == columnName ?
+            grid.SortDirection == SortDirection.Ascending ? "▲" :
+            "▼" : string.Empty);
+    }
+
+
+    }
+}
+
+
+
+
